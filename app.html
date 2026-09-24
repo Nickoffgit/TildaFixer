@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анализ сайта на Тильде — TildaFixer</title>
+<meta name="description" content="24 реальные проверки сайта на Тильде: мета-теги, заголовки, картинки, скорость, robots.txt и sitemap. Пошаговые инструкции и готовые тексты.">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232742F5'/%3E%3Ctext x='32' y='43' font-family='Arial' font-size='28' font-weight='bold' fill='%23D9F24F' text-anchor='middle'%3ETF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F1E8; --paper2:#FFFDF6; --ink:#12141C; --ink2:#3E4350; --mut:#7A7F8B;
+  --blue:#2742F5; --lime:#D9F24F; --coral:#FF6A48; --deep:#171233;
+  --ok:#1FA05A; --warn:#E28A00; --crit:#E5484D;
+  --line:rgba(18,20,28,.13); --dash:rgba(18,20,28,.3);
+  --glass:rgba(255,255,255,.55); --glass-brd:rgba(255,255,255,.72);
+  --fd:'Unbounded',sans-serif; --fb:'Manrope',sans-serif; --fm:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--fb);font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+::selection{background:var(--lime);color:var(--ink)}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+.noise{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E")}
+.bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-orbs::before{content:"";position:absolute;width:640px;height:640px;border-radius:50%;top:-260px;right:-180px;background:radial-gradient(circle,rgba(39,66,245,.16),transparent 65%)}
+.bg-orbs::after{content:"";position:absolute;width:540px;height:540px;border-radius:50%;bottom:-240px;left:-160px;background:radial-gradient(circle,rgba(255,106,72,.15),transparent 65%)}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+#hdr{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,border .3s;border-bottom:1px solid transparent}
+#hdr.scrolled{background:rgba(244,241,232,.72);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom-color:var(--line)}
+.hdr-in{max-width:1180px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:74px;gap:20px}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--fd);font-weight:700;font-size:1.05rem;text-decoration:none;color:var(--ink)}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:var(--blue);color:var(--lime);display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:.8rem;box-shadow:0 6px 14px rgba(39,66,245,.35)}
+.hdr-links{display:flex;gap:24px;align-items:center;font-weight:600;font-size:.9rem}
+.hdr-links a{color:var(--ink2);text-decoration:none}
+.hdr-links a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-weight:700;font-size:.95rem;padding:.95rem 1.6rem;border-radius:13px;border:2px solid var(--ink);background:var(--ink);color:#fff;transition:transform .25s,box-shadow .25s;white-space:nowrap;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(18,20,28,.24)}
+.btn-blue{background:var(--blue);border-color:var(--blue)}
+.btn-blue:hover{box-shadow:0 14px 30px rgba(39,66,245,.4)}
+.btn-lime{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-sm{padding:.6rem 1.1rem;font-size:.85rem;border-radius:10px}
+.arr{transition:transform .25s}.btn:hover .arr{transform:translateX(4px)}
+
+.glass{background:var(--glass);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border:1px solid var(--glass-brd);box-shadow:0 20px 60px rgba(18,20,28,.14)}
+
+main{padding:130px 0 80px;min-height:80vh}
+.state{display:none;animation:fadeUp .5s cubic-bezier(.2,.7,.2,1)}
+.state.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+.form-card{border-radius:26px;padding:46px;position:relative;overflow:hidden}
+.form-card::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;top:-140px;right:-90px;background:radial-gradient(circle,rgba(217,242,79,.55),transparent 65%)}
+.eyebrow{font-family:var(--fm);font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink2);display:inline-flex;align-items:center;gap:.6rem;margin-bottom:16px;position:relative}
+.eyebrow::before{content:"";width:9px;height:9px;background:var(--coral)}
+h1{font-family:var(--fd);font-weight:700;font-size:clamp(1.6rem,3.4vw,2.4rem);letter-spacing:-.015em;margin-bottom:12px;position:relative}
+.sub{color:var(--ink2);margin-bottom:30px;position:relative}
+.big-form{display:flex;gap:10px;background:var(--paper2);border:2px solid var(--ink);border-radius:16px;padding:8px;box-shadow:6px 6px 0 rgba(18,20,28,.12);position:relative}
+.big-form:focus-within{box-shadow:6px 6px 0 var(--blue)}
+.big-form input{flex:1;border:none;background:transparent;font-family:var(--fm);font-size:.98rem;padding:.75rem 1rem;min-width:0;color:var(--ink)}
+.big-form input:focus{outline:none}
+.big-form input::placeholder{color:var(--mut)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.form-msg{font-family:var(--fm);font-size:.78rem;color:var(--crit);margin-top:12px;min-height:1.2em;position:relative}
+.form-hints{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;position:relative}
+.form-hints span{font-family:var(--fm);font-size:.72rem;padding:.5rem .85rem;border-radius:99px;border:1.5px solid var(--line);background:rgba(255,255,255,.5)}
+.form-hints b{color:var(--blue)}
+#health-warn{display:none;margin-top:18px;border:1.5px solid rgba(226,138,0,.6);background:rgba(226,138,0,.12);color:#7c4e00;border-radius:12px;padding:12px 16px;font-size:.85rem;position:relative}
+
+.load-card{border-radius:26px;padding:46px;text-align:center}
+.scanline{position:relative;height:14px;border-radius:99px;background:rgba(18,20,28,.08);overflow:hidden;margin:26px auto 8px;max-width:460px}
+.scanline i{position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--coral),var(--warn),var(--ok));border-radius:99px;transition:width .5s ease}
+.load-pct{font-family:var(--fm);font-size:.78rem;color:var(--mut)}
+.load-title{font-family:var(--fd);font-weight:600;font-size:1.25rem;margin-bottom:6px}
+.load-domain{font-family:var(--fm);font-size:.85rem;color:var(--blue);word-break:break-all}
+.load-steps{max-width:460px;margin:30px auto 0;text-align:left;display:grid;gap:10px}
+.load-steps li{list-style:none;display:flex;gap:12px;align-items:center;font-family:var(--fm);font-size:.8rem;color:var(--mut);transition:color .3s}
+.load-steps li .st{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.65rem;flex:none;transition:all .3s}
+.load-steps li.now{color:var(--ink)}
+.load-steps li.now .st{border-color:var(--blue);color:var(--blue);animation:pulse 1s infinite}
+.load-steps li.done{color:var(--ink)}
+.load-steps li.done .st{background:var(--ok);border-color:var(--ok);color:#fff}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(39,66,245,.15)}}
+.load-note{font-size:.82rem;color:var(--mut);margin-top:26px}
+.load-cancel{background:none;border:none;font-family:var(--fm);font-size:.75rem;color:var(--mut);text-decoration:underline;margin-top:10px}
+
+.err-card{border-radius:26px;padding:56px 46px;text-align:center;border:2px solid rgba(229,72,77,.4);background:rgba(229,72,77,.06)}
+.err-ic{width:64px;height:64px;border-radius:18px;background:var(--crit);color:#fff;display:grid;place-items:center;font-size:1.7rem;margin:0 auto 20px}
+.err-card h2{font-family:var(--fd);font-size:1.4rem;margin-bottom:10px}
+.err-card p{color:var(--ink2);margin-bottom:26px;font-family:var(--fm);font-size:.85rem;word-break:break-word}
+
+.res-head{border-radius:24px;padding:30px;display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+.ring{width:96px;height:96px;flex:none}
+.ring-bg{fill:none;stroke:rgba(18,20,28,.1);stroke-width:8}
+.ring-fg{fill:none;stroke:var(--warn);stroke-width:8;stroke-linecap:round;stroke-dasharray:213.6;stroke-dashoffset:213.6;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)}
+.res-meta b{font-family:var(--fd);font-size:1.5rem;display:block;word-break:break-all}
+.res-meta small{font-family:var(--fm);font-size:.72rem;color:var(--mut)}
+#res-history{font-family:var(--fm);font-size:.72rem;color:var(--blue);display:block;margin-top:4px}
+.res-sum{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.res-sum span{font-family:var(--fm);font-size:.74rem;font-weight:600;padding:.5rem .85rem;border-radius:10px}
+.res-sum .s-crit{background:rgba(229,72,77,.14);color:var(--crit)}
+.res-sum .s-warn{background:rgba(226,138,0,.14);color:var(--warn)}
+.res-sum .s-ok{background:rgba(31,160,90,.13);color:var(--ok)}
+.res-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+
+.upsell{border-radius:20px;padding:24px 28px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:26px;background:var(--deep);color:#fff;border:1px solid rgba(255,255,255,.12)}
+.upsell b{font-family:var(--fd);font-size:1rem}
+.upsell p{font-size:.85rem;color:rgba(255,255,255,.66)}
+.upsell .btn{margin-left:auto}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{font-family:var(--fm);font-size:.74rem;font-weight:600;padding:.55rem .95rem;border-radius:99px;border:1.5px solid var(--line);background:transparent;color:var(--ink2);transition:all .25s}
+.tab:hover{transform:translateY(-1px)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:var(--lime)}
+.tab i{font-style:normal;opacity:.55;margin-left:.3rem}
+
+.find{border:1.5px solid var(--line);border-radius:16px;background:var(--paper2);margin-bottom:10px;overflow:hidden;transition:border-color .25s}
+.find:not(.locked):hover{border-color:var(--ink)}
+.find.hidden{display:none}
+.find-head{width:100%;background:none;border:none;display:flex;gap:13px;align-items:center;padding:17px 20px;text-align:left;font-family:var(--fb)}
+.find .dot{width:11px;height:11px;border-radius:50%;flex:none}
+.dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.crit{background:var(--crit)}
+.find-t{font-weight:700;font-size:.94rem}
+.find-cat{font-family:var(--fm);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-left:auto;flex:none}
+.chev{flex:none;color:var(--mut);transition:transform .3s}
+.find.open .chev{transform:rotate(180deg)}
+.find-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.7,.2,1)}
+.fix{padding:0 20px 20px 44px}
+.fix-d{font-size:.9rem;color:var(--ink2);margin-bottom:12px}
+.fix .path{font-family:var(--fm);font-size:.72rem;background:var(--lime);display:inline-block;padding:.42rem .75rem;border-radius:8px;margin-bottom:12px}
+.fix ol{margin-left:18px;font-size:.88rem;color:var(--ink2);display:grid;gap:6px}
+.suggest{margin-top:14px;border:1.5px solid rgba(200,220,60,.9);background:rgba(217,242,79,.16);border-radius:12px;padding:14px 16px}
+.suggest-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--fm);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+.suggest p{font-size:.9rem;font-family:var(--fm);word-break:break-word}
+.copy-btn{font-family:var(--fm);font-size:.66rem;font-weight:700;border:1.5px solid var(--ink);background:var(--lime);border-radius:8px;padding:.35rem .7rem;transition:transform .2s;white-space:nowrap}
+.copy-btn:hover{transform:translateY(-1px)}
+.find.locked .find-t{filter:blur(5px);user-select:none;pointer-events:none}
+.find.locked .lock-pill{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--fm);font-size:.66rem;font-weight:600;background:var(--ink);color:var(--lime);padding:.35rem .7rem;border-radius:8px;margin-left:auto}
+.tip{border:2px dashed var(--dash);border-radius:18px;padding:22px 26px;margin-top:26px;font-size:.92rem;color:var(--ink2);background:rgba(255,253,246,.6)}
+.tip b{color:var(--ink)}
+
+footer{position:relative;z-index:2;border-top:1.5px solid var(--ink);padding:30px 0;font-family:var(--fm);font-size:.72rem;color:var(--mut)}
+.f-in{max-width:960px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--ink2)}
+
+@media(max-width:640px){
+  main{padding:110px 0 60px}
+  .form-card,.load-card,.res-head{padding:28px 20px}
+  .big-form{flex-direction:column}
+  .res-sum{margin-left:0}
+  .upsell .btn{margin-left:0}
+  .hdr-links a:not(.btn){display:none}
+  .fix{padding-left:20px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+  .state{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+<div class="bg-orbs" aria-hidden="true"></div>
+
+<header id="hdr">
+  <div class="hdr-in">
+    <a class="logo" href="index.html"><span class="logo-mark">TF</span>TildaFixer</a>
+    <div class="hdr-links">
+      <a href="index.html">Главная</a>
+      <a href="index.html#pricing">Тарифы</a>
+      <a class="btn btn-lime btn-sm" href="index.html#pricing">Pro · 990 ₽</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <!-- STATE: FORM -->
+    <section class="state active" id="state-form">
+      <div class="form-card glass">
+        <span class="eyebrow">Бесплатный анализ · 24 проверки</span>
+        <h1>Введите адрес сайта на Тильде</h1>
+        <p class="sub">Мы проанализируем страницу по 24 параметрам — от Title до robots.txt — и дадим пошаговую инструкцию под интерфейс Тильды. Для сложных пунктов ИИ напишет готовые тексты.</p>
+        <form class="big-form" id="url-form" novalidate>
+          <input type="text" id="url-input" placeholder="например, ceramica-shop.ru" autocomplete="off" aria-label="Адрес сайта">
+          <button class="btn btn-blue" type="submit">Анализировать <span class="arr">→</span></button>
+        </form>
+        <p class="form-msg" id="form-msg" role="alert"></p>
+        <div id="health-warn" role="status"></div>
+        <div class="form-hints">
+          <span><b>01</b> Title и Description</span>
+          <span><b>02</b> Заголовки H1–H6</span>
+          <span><b>03</b> Alt и вес картинок</span>
+          <span><b>04</b> Скорость и скрипты</span>
+          <span><b>05</b> robots.txt · sitemap · HTTPS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: LOADING -->
+    <section class="state" id="state-loading">
+      <div class="load-card glass">
+        <p class="eyebrow" style="justify-content:center">Сканирование · 24 проверки</p>
+        <h2 class="load-title">Сервер анализирует сайт и готовит инструкцию…</h2>
+        <p class="load-domain" id="load-domain"></p>
+        <div class="scanline"><i id="load-bar"></i></div>
+        <p class="load-pct"><span id="load-pct">0</span>% · прошло <span id="load-time">0</span> с</p>
+        <ul class="load-steps" id="load-steps"></ul>
+        <p class="load-note">Обычно 15–40 секунд: мы реально запрашиваем страницу, robots.txt и sitemap.xml, измеряем картинки, а затем ИИ пишет инструкции.</p>
+        <button class="load-cancel" id="load-cancel">Отменить анализ</button>
+      </div>
+    </section>
+
+    <!-- STATE: ERROR -->
+    <section class="state" id="state-error">
+      <div class="err-card">
+        <div class="err-ic">!</div>
+        <h2>Не получилось проанализировать</h2>
+        <p id="err-text">Текст ошибки</p>
+        <button class="btn btn-blue" id="err-retry">Попробовать снова</button>
+      </div>
+    </section>
+
+    <!-- STATE: RESULT -->
+    <section class="state" id="state-result">
+      <div class="res-head glass">
+        <svg class="ring" viewBox="0 0 84 84" aria-label="SEO-балл">
+          <circle class="ring-bg" cx="42" cy="42" r="34"/>
+          <circle class="ring-fg" id="res-ring" cx="42" cy="42" r="34"/>
+        </svg>
+        <div class="res-meta">
+          <small>РЕЗУЛЬТАТЫ АНАЛИЗА · ДЛЯ САЙТА</small>
+          <b id="res-domain">—</b>
+          <small id="res-date"></small>
+          <span id="res-history"></span>
+        </div>
+        <div class="res-sum" id="res-sum"></div>
+      </div>
+
+      <div class="upsell">
+        <div>
+          <b>Бесплатный план: открыто 10 из 24 проверок</b>
+          <p>Полный отчёт со всеми инструкциями, историей и готовыми текстами — в тарифе Про.</p>
+        </div>
+        <a class="btn btn-lime" href="index.html#pricing">Открыть всё с Pro <span class="arr">→</span></a>
+      </div>
+
+      <div class="tabs" id="res-tabs"></div>
+      <div id="res-list"></div>
+
+      <div class="res-actions">
+        <button class="btn btn-ghost" id="btn-again">↺ Новый анализ</button>
+        <a class="btn btn-blue" href="index.html#pricing">Хочу полный отчёт</a>
+      </div>
+
+      <div class="tip">💡 <b>Совет:</b> выполняй рекомендации по очереди. После каждого изменения публикуй страницу в Tilda заново — и запускай повторный анализ, чтобы видеть рост балла.</div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="f-in">
+    <span>© <span id="year"></span> TildaFixer · Powered by Yandex Cloud AI</span>
+    <a href="index.html">← На главную</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const CATS={meta:'Мета-теги',head:'Заголовки',img:'Изображения',speed:'Скорость',index:'Индексация',content:'Контент'};
+const FREE_LIMIT=10;
+const PHASES=['Подключаемся к сайту','Читаем HTML и мета-теги','Запрашиваем robots.txt и sitemap.xml','Измеряем скрипты и изображения','ИИ анализирует текст','Собираем инструкцию'];
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function normDomain(v){
+  v=(v||'').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'').split(/[/?#]/)[0];
+  return /^[a-zа-яё0-9-]+(\.[a-zа-яё0-9-]+)+$/.test(v)?v:'';
+}
+function show(id){$$('.state').forEach(s=>s.classList.remove('active'));$('#'+id).classList.add('active');scrollTo({top:0,behavior:RM?'auto':'smooth'})}
+
+/* ---------- state vars ---------- */
+let loadToken=0, abortCtrl=null, timerInt=null, phaseInt=null, progInt=null;
+
+/* ---------- form ---------- */
+const form=$('#url-form'), input=$('#url-input'), msg=$('#form-msg');
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const d=normDomain(input.value);
+  if(!d){msg.textContent='Введите корректный адрес, например: mysite.tilda.ws';form.classList.remove('shake');void form.offsetWidth;form.classList.add('shake');return}
+  msg.textContent='';
+  startLoading(d);
+});
+input.addEventListener('input',()=>msg.textContent='');
+
+/* ---------- loading ---------- */
+function renderPhases(){$('#load-steps').innerHTML=PHASES.map(p=>`<li><span class="st">·</span>${p}</li>`).join('')}
+function markPhase(i,cls){
+  const li=$$('#load-steps li')[i];
+  if(!li)return;
+  li.classList.remove('now','done');
+  if(cls)li.classList.add(cls);
+  if(cls==='done')li.querySelector('.st').textContent='✓';
+  else li.querySelector('.st').textContent=cls==='now'?'›':'·';
+}
+function stopIntervals(){clearInterval(timerInt);clearInterval(phaseInt);clearInterval(progInt)}
+
+async function startLoading(domain){
+  const token=++loadToken;
+  if(abortCtrl)abortCtrl.abort();
+  abortCtrl=new AbortController();
+  const fullUrl='https://'+domain;
+
+  show('state-loading');
+  $('#load-domain').textContent=domain;
+  renderPhases();
+  markPhase(0,'now');
+  $('#load-bar').style.width='0';$('#load-pct').textContent='0';
+
+  let elapsed=0;
+  $('#load-time').textContent='0';
+  timerInt=setInterval(()=>{elapsed++;$('#load-time').textContent=elapsed},1000);
+
+  let phase=0;
+  phaseInt=setInterval(()=>{
+    if(phase<PHASES.length-1){markPhase(phase,'done');phase++;markPhase(phase,'now')}
+  },3600);
+
+  let pct=0;
+  progInt=setInterval(()=>{
+    pct+=(92-pct)*0.05;
+    $('#load-bar').style.width=pct+'%';
+    $('#load-pct').textContent=Math.round(pct);
+  },350);
+
+  const timeoutId=setTimeout(()=>abortCtrl.abort(),90000);
+
+  try{
+    const res=await fetch('/api/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url:fullUrl}),
+      signal:abortCtrl.signal
+    });
+    const data=await res.json().catch(()=>null);
+    clearTimeout(timeoutId);
+    if(token!==loadToken)return;
+    if(!res.ok||!data||data.ok!==true){
+      throw new Error((data&&data.error)||('Ошибка сервера '+res.status));
+    }
+    stopIntervals();
+    PHASES.forEach((_,i)=>markPhase(i,'done'));
+    $('#load-bar').style.width='100%';$('#load-pct').textContent='100';
+    setTimeout(()=>{if(token===loadToken)render(data,domain)},RM?0:450);
+  }catch(err){
+    clearTimeout(timeoutId);
+    if(token!==loadToken)return;
+    stopIntervals();
+    const text=err.name==='AbortError'
+      ?'Сервер не ответил за 90 секунд. Попробуйте ещё раз.'
+      :(err.message||'Не удалось связаться с сервером.');
+    showError(text);
+  }
+}
+
+$('#load-cancel').addEventListener('click',()=>{
+  loadToken++;
+  if(abortCtrl)abortCtrl.abort();
+  stopIntervals();
+  show('state-form');
+});
+$('#err-retry').addEventListener('click',()=>{show('state-form');input.focus()});
+
+function showError(text){
+  $('#err-text').textContent=text;
+  show('state-error');
+}
+
+/* ---------- result ---------- */
+function render(data,domain){
+  const items=[...(data.items||[])];
+  const order={crit:0,warn:1,ok:2};
+  items.sort((a,b)=>(order[a.status]??3)-(order[b.status]??3));
+
+  // ring
+  const score=Number(data.score)||0, C=213.6;
+  const ring=$('#res-ring');
+  ring.style.stroke=score>=75?'var(--ok)':score>=50?'var(--warn)':'var(--crit)';
+  ring.style.strokeDashoffset=C;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ring.style.strokeDashoffset=C*(1-score/100)}));
+
+  // meta
+  $('#res-domain').textContent=domain;
+  $('#res-date').textContent=new Date().toLocaleDateString('ru-RU')+' · '+items.length+' проверок'+(data.aiUsed===false?' · ИИ временно недоступен':'');
+
+  // history in this browser
+  try{
+    const key='tf_hist_'+domain;
+    const prev=localStorage.getItem(key);
+    $('#res-history').textContent=prev?('Прошлый раз: '+prev+' → сейчас '+score+(score>=+prev?' ↗':' ↘')):'Первая проверка в этом браузере';
+    localStorage.setItem(key,String(score));
+  }catch(e){$('#res-history').textContent=''}
+
+  // counts
+  const c=data.counts||{crit:0,warn:0,ok:0};
+  $('#res-sum').innerHTML=
+    `<span class="s-crit">✗ Критичных: ${c.crit||0}</span>`+
+    `<span class="s-warn">! Предупреждений: ${c.warn||0}</span>`+
+    `<span class="s-ok">✓ В порядке: ${c.ok||0}</span>`;
+
+  // tabs
+  let tabs=`<button class="tab on" data-cat="all">Все<i>${items.length}</i></button>`;
+  for(const k in CATS){
+    const n=items.filter(i=>i.cat===k).length;
+    tabs+=`<button class="tab" data-cat="${k}">${CATS[k]}<i>${n}</i></button>`;
+  }
+  $('#res-tabs').innerHTML=tabs;
+
+  // list
+  $('#res-list').innerHTML=items.map((it,idx)=>{
+    const locked=idx>=FREE_LIMIT;
+    if(locked){
+      return `<div class="find locked" data-cat="${esc(it.cat)}">
+        <div class="find-head">
+          <span class="dot ${esc(it.status)}"></span>
+          <span class="find-t">${esc(it.title)}</span>
+          <span class="lock-pill">🔒 PRO</span>
+        </div>
+      </div>`;
+    }
+    const fix=it.fix;
+    const suggestion=it.suggestion
+      ?`<div class="suggest">
+          <div class="suggest-top"><span>Готовый текст от ИИ</span><button class="copy-btn" type="button" data-copy="${esc(it.suggestion)}">Копировать</button></div>
+          <p>${esc(it.suggestion)}</p>
+        </div>`
+      :'';
+    return `<div class="find st-${esc(it.status)}" data-cat="${esc(it.cat)}">
+      <button class="find-head" type="button" aria-expanded="false">
+        <span class="dot ${esc(it.status)}"></span>
+        <span class="find-t">${esc(it.title)}</span>
+        <span class="find-cat">${esc(CATS[it.cat]||it.cat)}</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="find-body"><div class="fix">
+        <p class="fix-d">${esc(it.description)}</p>
+        ${it.status!=='ok'&&fix?`<span class="path">${esc(fix.path)}</span><ol>${(fix.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:''}
+        ${suggestion}
+      </div></div>
+    </div>`;
+  }).join('');
+
+  // expand
+  $$('#res-list .find:not(.locked) .find-head').forEach(h=>h.addEventListener('click',()=>{
+    const row=h.parentElement,body=$('.find-body',row);
+    const open=row.classList.toggle('open');
+    h.setAttribute('aria-expanded',open);
+    body.style.maxHeight=open?body.scrollHeight+'px':null;
+  }));
+
+  // locked → upsell
+  $$('#res-list .find.locked').forEach(r=>r.addEventListener('click',()=>{
+    $('.upsell').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
+  }));
+
+  // copy buttons
+  $$('#res-list .copy-btn').forEach(b=>b.addEventListener('click',async(e)=>{
+    e.stopPropagation();
+    const text=b.dataset.copy||'';
+    try{await navigator.clipboard.writeText(text)}
+    catch(err){
+      const ta=document.createElement('textarea');
+      ta.value=text;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy')}catch(e2){}
+      ta.remove();
+    }
+    const old=b.textContent;b.textContent='Скопировано ✓';
+    setTimeout(()=>b.textContent=old,1600);
+  }));
+
+  // tabs filter
+  $$('#res-tabs .tab').forEach(t=>t.addEventListener('click',()=>{
+    $$('#res-tabs .tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    const cat=t.dataset.cat;
+    $$('#res-list .find').forEach(r=>r.classList.toggle('hidden',cat!=='all'&&r.dataset.cat!==cat));
+  }));
+
+  show('state-result');
+}
+
+/* ---------- again / params / health ---------- */
+$('#btn-again').addEventListener('click',()=>{input.value='';show('state-form');input.focus()});
+
+fetch('/api/health').then(r=>r.json()).then(h=>{
+  if(!h||!h.ok){
+    const w=$('#health-warn');
+    w.style.display='block';
+    w.textContent='⚠ Сервер не настроен до конца: нет переменных YC_API_KEY / YC_FOLDER_ID в .env. Анализ будет работать в ограниченном режиме.';
+  }
+}).catch(()=>{
+  const w=$('#health-warn');
+  w.style.display='block';
+  w.textContent='⚠ Сервер анализа недоступен. Проверьте, что запущен node server.js.';
+});
+
+const p=new URLSearchParams(location.search).get('url');
+if(p){
+  const d=normDomain(p);
+  if(d){input.value=d;setTimeout(()=>startLoading(d),400)}
+}
+
+$('#year').textContent=new Date().getFullYear();
+addEventListener('scroll',()=>$('#hdr').classList.toggle('scrolled',scrollY>10),{passive:true});
+})();
+</script>
+</body>
+</html>

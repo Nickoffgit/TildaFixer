@@ -1,0 +1,18 @@
+{
+  "name": "tildafixer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SEO analyzer for Tilda sites with Yandex Cloud",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
